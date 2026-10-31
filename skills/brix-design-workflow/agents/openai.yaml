@@ -1,0 +1,4 @@
+interface:
+  display_name: "Brix Design Workflow"
+  short_description: "Reference-driven Figma design with reusable components"
+  default_prompt: "Use $brix-design-workflow to design or refine this Figma project using its own identity, section-specific references, reusable components, and visual verification."
