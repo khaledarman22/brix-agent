@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "stages": [
+    {
+      "id": "01-brand-intake",
+      "skill": "skills/brix-01-brand-intake/SKILL.md"
+    },
+    {
+      "id": "02-reference-selection",
+      "skill": "skills/brix-02-reference-selection/SKILL.md"
+    },
+    {
+      "id": "03-design-dna",
+      "skill": "skills/brix-03-design-dna/SKILL.md"
+    },
+    {
+      "id": "04-components",
+      "skill": "skills/brix-04-components/SKILL.md"
+    },
+    {
+      "id": "05-screen-assembly",
+      "skill": "skills/brix-05-screen-assembly/SKILL.md"
+    },
+    {
+      "id": "06-design-review",
+      "skill": "skills/brix-06-design-review/SKILL.md"
+    }
+  ]
+}

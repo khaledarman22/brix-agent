@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "reference_policy": "single-source",
+  "anti_slop": {
+    "mode": "during"
+  },
+  "defaults": {
+    "locales": [
+      "ar",
+      "en"
+    ]
+  },
+  "mcp_source": "/Users/khaled/Desktop/programming/tools/brix"
+}

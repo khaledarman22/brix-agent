@@ -1,68 +1,35 @@
 ---
 name: brix-design-workflow
-description: Design or refine native editable Figma interfaces using the Brix method—project inspection, section-specific visual references, reusable components, and screenshot-led iteration. Use when the user asks for Brix's design style or workflow, or reference-driven Figma design across projects. This transfers the process, not a previous project's visual identity.
+description: Execute Brix reference-driven Figma design with one reference, project-root Design DNA, ordered evidence gates, reusable components and scoped bilingual review.
 ---
 
-# Brix design workflow
+# Brix local workflow
 
-Apply this workflow to the user's selected project. Keep its audience, brand, language, content, device sizes, and existing decisions; never carry Snaabble names, assets, colors, dimensions, or layouts into another project by default. Speak the user's language (Egyptian Arabic when appropriate).
+BRIX_ROOT is two directories above this skill. Read BRIX_ROOT/brix.config.json. All dependencies are local to this bundle; never install or edit global Claude/Codex skills or settings. Explicit user choices prevail. Use the calling project's absolute folder for output, never the Brix installation.
 
-## 1. Orient before designing
+For design tasks run the following stages in order using BRIX_ROOT/scripts/workflow.py. Read the skill returned by `next`, execute it, save genuine evidence, then `complete`. The helper validates saved artifacts; it does not intercept MCP calls or prove the authenticity of recorded responses.
 
-- Discover the connected Figma tools. Prefer Brix when available or explicitly requested. Verify connection, file key, page, selection, and pause state before reading or writing. A skill is guidance, not an installed bridge.
-- Read the saved brief, page structure, existing tokens/styles/components, and the target region. Inspect other relevant pages rather than assuming the file is empty. Read exact node properties before editing.
-- Use the available provider's schemas and required host skills. For Brix operations, read [references/brix-tools.md](references/brix-tools.md). If the user explicitly requires Brix and it is unavailable, report the concrete connection issue; do not silently change providers.
-- If the project uses `.ui-ux-magec/`, follow its project instructions and use that workspace as the source of truth. This skill supplies design method, not a replacement task/approval system.
-- For status-only requests, inspect and report without starting design work or saving a new brief. Separate observed file contents from inferred history and unverified quality.
+1. [Brand intake](../brix-01-brand-intake/SKILL.md): inspect project and import logo/color reference.
+2. [Reference selection](../brix-02-reference-selection/SKILL.md): select ONE reference for the entire website autonomously and proceed immediately.
+3. [Design DNA](../brix-03-design-dna/SKILL.md): extract source DNA and effective brand-adapted DNA into visible project-root JSON.
+4. [Components](../brix-04-components/SKILL.md): derive variables, styles, components and variants from effective DNA before screen assembly.
+5. [Screen assembly](../brix-05-screen-assembly/SKILL.md): use instances in Auto Layout screen containers, Arabic/English by default; honor explicit locale narrowing.
+6. [Review](../brix-06-design-review/SKILL.md): visual review plus actual live readback and DNA comparison.
 
-## 2. Understand and preserve the brief
+```sh
+python3 "$BRIX_ROOT/scripts/workflow.py" init --project /absolute/client-project --task home
+python3 "$BRIX_ROOT/scripts/workflow.py" next --project /absolute/client-project --task home
+python3 "$BRIX_ROOT/scripts/workflow.py" complete --project /absolute/client-project --task home --stage 01-brand-intake --evidence /absolute/client-project/.brix/workflows/home/intake.json
+```
 
-For new work, establish the product, audience, user goal, requested screens/sections, key flows, language/direction, and target devices. Research relevant real products and market expectations where this affects the design; record actual sources and distinguish assumptions.
+Use `init --locales ar` for an explicitly Arabic-only task; defaults are ar/en. Use a separate task scope when requested locales change. Resume existing state. After changes, `reopen --stage <earliest-affected-stage> --reason <reason>` invalidates dependent stages. Reuse valid existing foundations; never rebuild a whole website for a small edit. Inspect status-only requests without initializing work.
 
-Reuse existing decisions. Ask only questions whose answers materially change the output; otherwise state a reasonable assumption and proceed. Do not turn a section request into a whole-product redesign.
+Keep `reference-selection.json`, `reference-dna.json`, `design-dna.json`, `DESIGN.md` and `anti-slop-report.json` visible in the calling project's root. Internal evidence/specs/readbacks belong in `.brix/workflows/<task>/`. The selected reference is site-wide: reuse it across tasks. Replacing it requires reconciliation of all affected screens, not mixing sources. Track adaptations to the user's logo, palette, content and locale in effective DNA.
 
-During authorized design work, persist a compact brief in the file's supported brief storage or established project workspace:
+Use [image prompts and tracking](../brix-image-prompts/SKILL.md) after DNA is established, during image delivery/placement, and at final review. Maintain visible project-root `IMAGE-PROMPTS.md` with prompts and evidence-backed per-image delivery/placement states. Reuse supplied assets; report missing required images explicitly. This supporting workflow runs within stages 03, 05 and 06, not as a new numbered stage. It is mandatory whenever those tasks involve imagery. An image-delivery follow-up automatically invokes it even after the original design task finished: update the Markdown and execute verified placement, without waiting for the user to name the skill. For an existing completed task reopen stage 05 (or the earliest affected stage if foundations change), update only affected slots, then refresh review evidence. Do not repeat reference selection or redesign unrelated screens.
 
-- Product and audience; scope and screen/section inventory.
-- Identity: color and type tokens, spacing, icon family, imagery, direction.
-- Reference sources and selected regions with their intended use.
-- Decisions and user feedback, including rejected directions.
-- Progress: completed, unverified, remaining, and relevant node IDs.
+Read [reference method](references/reference-method.md), [DNA usage](references/dna-usage.md), [anti-slop integration](references/anti-slop.md) and [Brix tools](references/brix-tools.md). Apply anti-slop during construction and final review using the resolved local mode. Do not ask for reference approval unless explicitly requested or required by the calling project's rules.
 
-Merge with the existing brief; preserve unrelated decisions. No saved brief means missing history, not proof that no design work happened.
+Discover the actual Brix MCP tool schemas and verify file/connection before writes. If Brix is unavailable, report the blocker. Use native editable Figma content, clear semantic layer/variant/variable names and reversible Trash moves. A Figma Page cannot have Auto Layout: create an Auto Layout root frame inside each design page and compose screen frames inside it. Reuse existing nodes and components. Inspect screenshots after meaningful changes; a successful write is not visual verification.
 
-## 3. Research by section and by reusable part
-
-Read [references/reference-method.md](references/reference-method.md) for new screens, sections, or unfamiliar components.
-
-Use real visual references for the actual problem: navigation, hero, service cards, project grids, forms, pricing, FAQ, footer, and relevant states. Search by function and visual structure, not only by industry. Cover the requested regions rather than researching only the hero.
-
-Create focused reference boards and inspect the images. Choose a primary layout reference and borrow specific useful details from others; identify and crop those regions. Build from visible evidence, adapted to the current brand, rather than a prose recollection of a reference.
-
-Select a direction autonomously unless the user asks to choose or the project's workflow requires approval. User-selected references and annotations take precedence. Do not impose fixed numbers of references or copy another project's large candidate boards.
-
-Skip fresh research for a small copy/color/spacing correction, a pattern already established in the current design system, or an explicit request to design directly without references.
-
-## 4. Build with reusable foundations
-
-- Reuse existing components, tokens, and text styles first. Create missing foundations that the requested work needs; do not manufacture a full design system for a minor edit.
-- Prefer components for reusable controls, cards, and sections, then instances in screens. Give genuinely reusable alternatives meaningful variants and states. Avoid duplicating near-identical main components.
-- Use Auto Layout, deliberate fill/hug/fixed sizing, and project-appropriate screen dimensions. Text wrapping needs a real width. Handle RTL/LTR, long content, and responsive layouts relevant to the scope.
-- Preserve existing page organization. For a new file, use purpose-specific pages such as App, Web, Dashboard, Components, References, and Trash, creating each only when needed. Do not rename an established Website page merely to match a convention.
-- Keep one authoritative frame per screen/state/device. Update it rather than creating “new” copies after every revision. Place distinct breakpoints and states clearly beside their related screen.
-- Build one meaningful section at a time, inspect it, and continue. Preserve manual changes outside the requested region.
-- Use a coherent icon family and appropriate imagery. Record image provenance. Reference gallery screenshots belong on reference boards; they are not product assets. Generate imagery when available and suitable, or source permitted stock and inspect its crop. Label temporary stand-ins and pending image prompts honestly.
-
-## 5. Look, fix, and verify
-
-After each meaningful build/edit, export and inspect a screenshot. Check hierarchy, wrapping, clipping, overlaps, spacing, contrast, image fit, and direction. Fix visible problems before extending the same pattern elsewhere.
-
-Use structural lint when available to check token/style bindings, layout, contrast, and component consistency. Apply automatic fixes only when their effect is understood and within scope. A successful write or lint is not visual verification.
-
-After a timeout or disconnect, re-read the affected nodes before retrying: the change may already exist. Respect plugin Pause. Use recoverable trash for removals where supported, and obtain authorization before destructive replacement outside the user's requested scope.
-
-## 6. Continue and hand off clearly
-
-User feedback changes the named region or pattern. Keep accepted decisions, remember rejected directions, and research a new reference only where the change needs it. Avoid repeated approval gates for routine design choices already authorized.
-
-At the end of design work, update the saved decisions/progress. Report the exact file/page/frames changed, the verification performed, and any remaining gaps. Never claim completion, responsive coverage, or visual quality that was not checked. Export implementation code only when requested.
+The only optional supporting skill retained is [impeccable](../impeccable/SKILL.md) for focused polish. Load it when relevant. Its palette/style recommendations must not replace the single reference or effective DNA. Keep code generation outside design scope unless requested. Host-required tool instructions still apply; for a ui-ux-magec workspace follow its authoritative task/approval rules.
